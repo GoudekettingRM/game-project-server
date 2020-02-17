@@ -49,4 +49,22 @@ router.get("/users", async (req, res, next) => {
   }
 });
 
+router.get("/users/:id", async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res
+        .status(404)
+        .send({ message: "No user found with this ID" })
+        .end();
+    }
+    const { password, ...userWithoutPassword } = user.dataValues;
+
+    res.json(userWithoutPassword);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
