@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const userRouter = require("./User/router");
 
 const port = process.env.PORT || 4000;
 
@@ -17,4 +18,6 @@ const jsonMiddleware = express.json();
 app.use(jsonMiddleware);
 
 // ----------------------------- ROUTERS --------------------------- //
+app.use(userRouter);
+
 app.listen(port, onListen);
