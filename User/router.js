@@ -1,12 +1,12 @@
 const { Router } = require("express");
-const db = require("../db");
+const bcrypt = require("bcrypt");
 const User = require("./model");
 
 const router = new Router();
 
 router.post("/users", async (req, res, next) => {
-  const { password, email, username } = req.body;
-  if (!username || !email || !password) {
+  const { email, username } = req.body;
+  if (!username || !email || !req.body.password) {
     res
       .status(400)
       .send({
@@ -15,8 +15,15 @@ router.post("/users", async (req, res, next) => {
       .end();
   }
   try {
-    const user = await User.create(req.body);
-    res.send(user);
+    const user = await User.create({
+      username: username,
+      email: email,
+      password: bcrypt.hashSync(req.body.password, 10)
+    });
+
+    const { password, ...userData } = user.dataValues;
+
+    res.send(userData);
   } catch (error) {
     next(error);
   }
