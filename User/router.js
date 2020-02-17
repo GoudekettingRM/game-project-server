@@ -29,4 +29,24 @@ router.post("/users", async (req, res, next) => {
   }
 });
 
+router.get("/users", async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+    if (!users.length) {
+      res
+        .status(404)
+        .send({ message: "No users yet." })
+        .end();
+    }
+    const usersWithoutPassword = users.map(user => {
+      const { password, ...userWithoutPassword } = user.dataValues;
+      return userWithoutPassword;
+    });
+
+    res.json(usersWithoutPassword);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
