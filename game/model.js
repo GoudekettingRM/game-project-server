@@ -20,19 +20,19 @@ const Game = db.define("game", {
     type: Sequelize.ARRAY(
       Sequelize.ARRAY(
         Sequelize.ARRAY(
-          Sequelize.ENUM(
-            0,
-            "I",
-            "J",
-            "L",
-            "O",
-            "S",
-            "Z",
-            "T",
-            "clear",
-            "merged"
-          )
-          // Sequelize.STRING
+          // Sequelize.ENUM(
+          //   0,
+          //   "I",
+          //   "J",
+          //   "L",
+          //   "O",
+          //   "S",
+          //   "Z",
+          //   "T",
+          //   "clear",
+          //   "merged"
+          // )
+          Sequelize.STRING
         )
       )
     ),
