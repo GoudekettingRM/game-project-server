@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const userRouter = require("./User/router");
 const authenticationRouter = require("./Authentication/router");
+const gameRouter = require("./game/router");
 
 const Sse = require("json-sse");
 const Room = require("./room/model");
@@ -55,6 +56,7 @@ app.use(roomRouter);
 
 app.use(authenticationRouter);
 app.use(userRouter);
+app.use(gameRouter);
 
 app.use(messageFactory, roomFactory);
 
