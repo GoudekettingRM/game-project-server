@@ -23,4 +23,9 @@ router.post("/games", async (request, response, next) => {
   }
 });
 
+router.patch("/games", async (request, response, next) => {
+  console.log("Request body", request.body);
+  response.send("Hello there");
+});
+
 module.exports = router;
