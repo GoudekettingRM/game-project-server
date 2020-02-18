@@ -18,11 +18,13 @@ function factory(stream) {
 
       const message = await Message.create(request.body);
 
-      const rooms = await Room.findAll({ include: [Message] });
+      const room = await Room.findByPk(request.body.roomId, {
+        include: [Message]
+      });
 
       const action = {
-        type: "ALL_ROOMS",
-        payload: rooms
+        type: "NEW_MESSAGE_IN_EXISTING_ROOM",
+        payload: room
       };
 
       const json = JSON.stringify(action);
