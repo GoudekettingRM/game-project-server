@@ -28,7 +28,7 @@ function factory(stream) {
     const { boardState, id } = request.body;
     console.log("Request body", request.body);
     try {
-      const updatedBoardState = await Game.update(
+      const updateBoardState = await Game.update(
         { boardState },
         {
           where: {
@@ -36,11 +36,22 @@ function factory(stream) {
           }
         }
       );
-      console.log("Updated board state test:", updatedBoardState);
+      console.log("Updated board state test:", updateBoardState);
+
+      const updatedGame = await Game.findByPk(id);
+
+      const updatedGameAction = {
+        type: "BOARD_UPDATED",
+        payload: updatedGame
+      };
+
+      const jsonupdatedGameAction = JSON.stringify(updatedGameAction);
+      stream.send(jsonupdatedGameAction);
+
+      response.send({ message: "Game Updated Succesfully" });
     } catch (error) {
       next(error);
     }
-    response.send("Hello there");
   });
   return router;
 }
