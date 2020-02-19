@@ -1,13 +1,17 @@
 const express = require("express");
 const Message = require("./model");
 const Room = require("../room/model");
+const Game = require("../game/model");
+const { auth } = require("../Authentication/authMiddleware");
 
 function factory(stream) {
   const { Router } = express;
 
   const router = Router();
 
-  router.post("/message", async function(request, response, next) {
+  router.post("/message", auth, async function(request, response, next) {
+    console.log("Request test", request);
+
     try {
       if (!request.body.text) {
         response.send("Enter text");
@@ -19,7 +23,7 @@ function factory(stream) {
       const message = await Message.create(request.body);
 
       const room = await Room.findByPk(request.body.roomId, {
-        include: [Message]
+        include: [Message, Game]
       });
 
       const action = {
