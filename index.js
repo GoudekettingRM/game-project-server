@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const userRouter = require("./User/router");
 const authenticationRouter = require("./Authentication/router");
-const gameRouter = require("./game/router");
+const gameFactory = require("./game/router");
 
 const Sse = require("json-sse");
 const Room = require("./room/model");
@@ -48,16 +48,17 @@ app.get("/stream", async (request, response, next) => {
   }
 });
 
+// --------------------- FACTORIES AND CORRESPONDING ROUTERS ----------------//
 const messageRouter = messageFactory(stream);
 app.use(messageRouter);
 
 const roomRouter = roomFactory(stream);
 app.use(roomRouter);
 
-app.use(authenticationRouter);
-app.use(userRouter);
+const gameRouter = gameFactory(stream);
 app.use(gameRouter);
 
-app.use(messageFactory, roomFactory);
+app.use(authenticationRouter);
+app.use(userRouter);
 
 app.listen(port, onListen);
