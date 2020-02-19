@@ -1,10 +1,11 @@
 const { Router } = require("express");
 const Game = require("./model");
+const { auth } = require("../Authentication/authMiddleware");
 
 function factory(stream) {
   const router = new Router();
 
-  router.post("/games", async (request, response, next) => {
+  router.post("/games", auth, async (request, response, next) => {
     try {
       const { body } = request;
       console.log("body test:", body);
@@ -36,7 +37,7 @@ function factory(stream) {
     }
   });
 
-  router.patch("/games", async (request, response, next) => {
+  router.patch("/games", auth, async (request, response, next) => {
     const { id } = request.body;
     console.log("Request body", request.body);
     try {
