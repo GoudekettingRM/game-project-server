@@ -1,6 +1,7 @@
 const express = require("express");
 const Room = require("./model");
 const Message = require("../message/model");
+const Game = require("../game/model");
 
 function factory(stream) {
   const { Router } = express;
@@ -16,7 +17,7 @@ function factory(stream) {
       const ref = await Room.create(entity);
 
       const room = await Room.findByPk(ref.id, {
-        include: [Message]
+        include: [Message, Game]
       });
 
       const action = {
@@ -27,6 +28,34 @@ function factory(stream) {
       const json = JSON.stringify(action);
 
       stream.send(json);
+
+      response.send(room);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get("/room/:id", async (request, response, next) => {
+    const roomId = request.params.id;
+    console.log("Room id test", roomId);
+
+    try {
+      const room = await Room.findByPk(roomId, { include: [Message, Game] });
+      if (!room) {
+        response
+          .status(404)
+          .send({ message: "Room not found" })
+          .end();
+      }
+
+      const roomAction = {
+        type: "FETCH_DATA_OF_ONE_ROOM",
+        payload: room
+      };
+
+      // const jsonRoom = JSON.stringify(roomAction);
+
+      // stream.send(jsonRoom);
 
       response.send(room);
     } catch (error) {

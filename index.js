@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const userRouter = require("./User/router");
 const authenticationRouter = require("./Authentication/router");
+const Game = require("./game/model");
 const gameFactory = require("./game/router");
 
 const Sse = require("json-sse");
@@ -32,7 +33,7 @@ const stream = new Sse();
 // // get on the stream
 app.get("/stream", async (request, response, next) => {
   try {
-    const rooms = await Room.findAll({ include: [Message] });
+    const rooms = await Room.findAll({ include: [Message, Game] });
 
     const action = {
       type: "ALL_ROOMS",

@@ -5,37 +5,46 @@ function factory(stream) {
   const router = new Router();
 
   router.post("/games", async (request, response, next) => {
-    // console.log(" New game endpoint! Hellooooooo");
-    // response.status(200).send(" Hiyooooo");
     try {
       const { body } = request;
       console.log("body test:", body);
       const { maxPlayers, boardState, roomId } = body;
-      const game = await Game.create({ maxPlayers, boardState, roomId });
+      const alreadyExistingGame = await Game.findOne({
+        where: { roomId: roomId }
+      });
+      if (alreadyExistingGame) {
+        response
+          .status(400)
+          .send({
+            message:
+              "This room already has a game that is running and therefore a new one cannot be created."
+          })
+          .end();
+      } else {
+        const game = await Game.create({ maxPlayers, boardState, roomId });
 
-      // const game = await Game.findByPk(ref.id);
-      const action = {
-        type: "NEW_GAME",
-        payload: game
-      };
-      response.send(action);
+        const gameAction = {
+          type: "NEW_GAME",
+          payload: game
+        };
+
+        const jsonNewGameAction = JSON.stringify(gameAction);
+        stream.send(jsonNewGameAction);
+      }
     } catch (error) {
       next(error);
     }
   });
 
   router.patch("/games", async (request, response, next) => {
-    const { boardState, id } = request.body;
+    const { id } = request.body;
     console.log("Request body", request.body);
     try {
-      const updateBoardState = await Game.update(
-        { boardState },
-        {
-          where: {
-            id: id
-          }
+      const updateBoardState = await Game.update(request.body, {
+        where: {
+          id: id
         }
-      );
+      });
       console.log("Updated board state test:", updateBoardState);
 
       const updatedGame = await Game.findByPk(id);
