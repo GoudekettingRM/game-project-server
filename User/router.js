@@ -70,13 +70,21 @@ router.get("/users/:id", async (req, res, next) => {
 router.patch("/users/:id", async (request, response, next) => {
   const userId = request.params.id;
   try {
-    const user = await User.update(request.body, {
+    await User.update(request.body, {
       where: {
         id: userId
       }
     });
-    console.log("User test after update", user);
-    response.send("did it.");
+
+    const updatedUser = await User.findByPk(userId);
+    if (!updatedUser) {
+      response
+        .status(404)
+        .send({ message: "User not found" })
+        .end();
+    }
+    const { password, ...updatedUserWithoutPassword } = updatedUser.dataValues;
+    response.json(updatedUserWithoutPassword);
   } catch (error) {
     next(error);
   }
