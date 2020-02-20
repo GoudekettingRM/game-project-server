@@ -31,6 +31,7 @@ function factory(stream) {
 
         const jsonNewGameAction = JSON.stringify(gameAction);
         stream.send(jsonNewGameAction);
+        response.send({ message: "game created.", game });
       }
     } catch (error) {
       next(error);

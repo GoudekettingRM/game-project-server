@@ -1,5 +1,6 @@
 const db = require("../db");
 const Sequelize = require("sequelize");
+// const User = require("../User/model");
 
 const Game = db.define("game", {
   maxPlayers: {
@@ -39,6 +40,9 @@ const Game = db.define("game", {
   status: {
     type: Sequelize.STRING,
     defaultValue: null
+  },
+  playerWithControl: {
+    type: Sequelize.INTEGER
   }
 });
 
