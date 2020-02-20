@@ -78,6 +78,37 @@ function factory(stream) {
 
   router.patch("/games/:id", auth, async (request, response, next) => {
     const gameId = request.params.id;
+    try {
+      const game = await Game.findByPk(gameId);
+
+      if (!game) {
+        response
+          .status(404)
+          .send({ message: "No game found" })
+          .end();
+      }
+
+      const update = await game.update(request.body, {
+        where: { id: gameId }
+      });
+
+      console.log("update test", update);
+
+      // const updatedGame = await Game.findByPk(gameId);
+
+      const updatedGameAction = {
+        type: "BOARD_UPDATED",
+        payload: update.dataValues
+      };
+
+      const jsonUpdatedGameAction = JSON.stringify(updatedGameAction);
+
+      stream.send(jsonUpdatedGameAction);
+
+      response.send({ message: "Game updated!" });
+    } catch (error) {
+      next(error);
+    }
   });
   return router;
 }
