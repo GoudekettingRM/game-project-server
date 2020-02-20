@@ -10,8 +10,8 @@ function factory(stream) {
   const router = Router();
 
   router.post("/message", auth, async function(request, response, next) {
-    console.log("Request test", request);
-
+    const { text, roomId } = request.body;
+    const userId = request.user.dataValues.id;
     try {
       if (!request.body.text) {
         response.send("Enter text");
@@ -20,7 +20,7 @@ function factory(stream) {
         request.body.roomId = 1;
       }
 
-      const message = await Message.create(request.body);
+      const message = await Message.create({ text, roomId, userId });
 
       const room = await Room.findByPk(request.body.roomId, {
         include: [Message, Game]
