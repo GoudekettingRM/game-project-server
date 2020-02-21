@@ -43,6 +43,18 @@ const Game = db.define("game", {
   },
   playerWithControl: {
     type: Sequelize.INTEGER
+  },
+  rows: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  },
+  score: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  },
+  level: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
   }
 });
 

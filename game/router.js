@@ -3,6 +3,7 @@ const Game = require("./model");
 const User = require("../User/model");
 const { auth } = require("../Authentication/authMiddleware");
 const { changeUserWithControl } = require("./changeUserMiddleware");
+const { updateGameScore } = require("./calculateGameScoreMiddleware");
 
 function factory(stream) {
   const router = new Router();
@@ -49,6 +50,7 @@ function factory(stream) {
     "/games",
     auth,
     changeUserWithControl,
+    updateGameScore,
     async (request, response, next) => {
       const { id } = request.body;
       console.log("Request body", request.body);
